@@ -1,4 +1,4 @@
-# Relatório de Testes com o Framework Jest
+# Relatório de Testes com o Framework Jest (Foco em Lógica de Negócio)
 
 ## 1. Breve Descrição do Framework Selecionado: Jest
 
@@ -48,22 +48,21 @@ O Jest pode ser classificado sob múltiplas perspectivas de teste:
 
 Sob a perspectiva de técnicas, o Jest é primariamente uma ferramenta para **Testes de Caixa Branca (White-Box Testing)**.
 
-* **Argumento:** Os testes escritos com Jest têm acesso direto ao código-fonte, incluindo classes, módulos e funções. Os desenvolvedores criam testes que conhecem a estrutura interna do software, permitindo mockar dependências e testar caminhos lógicos específicos (branches) dentro de uma função. Por exemplo, ao testar a função de divisão, criamos casos específicos para a condição `if (divisor === 0)`, o que demonstra conhecimento da implementação interna.
+* **Argumento:** Os testes escritos com Jest têm acesso direto ao código-fonte, incluindo classes, módulos e funções. Os desenvolvedores criam testes que conhecem a estrutura interna do software, permitindo testar caminhos lógicos específicos (branches) dentro de uma função. Por exemplo, ao testar a função de divisão, criamos casos específicos para a condição `if (divisor === 0)`, o que demonstra conhecimento da implementação interna.
 
 #### ii) Níveis de Teste
 
 Considerando os níveis de teste, o Jest se destaca principalmente em:
 
-* **Testes de Unidade (Unit Testing):** Este é o ponto mais forte do Jest. Sua arquitetura, com mocks integrados e um executor rápido, é ideal para isolar e testar a menor parte funcional do código (uma função ou uma classe) de forma independente. O `README` demonstra isso perfeitamente, com arquivos de teste dedicados (`Calculadora.test.js`, `Display.test.js`) que verificam cada classe em total isolamento.
-* **Testes de Integração (Integration Testing):** Embora seja excelente para testes de unidade, o Jest também é amplamente utilizado para testes de integração. Ele pode ser usado para verificar a interação entre diferentes módulos ou componentes. No projeto da calculadora, um teste de integração poderia verificar se a classe `Display` chama corretamente os métodos da classe `Calculadora` quando um usuário realiza uma operação completa.
+* **Testes de Unidade (Unit Testing):** Este é o ponto mais forte do Jest. Sua arquitetura, com mocks integrados e um executor rápido, é ideal para isolar e testar a menor parte funcional do código (uma função ou uma classe) de forma independente. O projeto demonstra isso perfeitamente, com um arquivo de teste dedicado (`Calculadora.test.js`) que verifica a classe de lógica de negócio em total isolamento.
+* **Testes de Integração (Integration Testing):** Embora seja excelente para testes de unidade, o Jest também pode ser utilizado para testes de integração, verificando a interação entre diferentes módulos.
 
 #### iii) Tipos de Teste
 
 Em relação aos tipos de teste, o Jest suporta principalmente:
 
-* **Testes Funcionais:** A maioria dos 54 testes implementados são funcionais. Eles verificam se uma funcionalidade específica do software se comporta conforme o esperado, validando as saídas com base em um conjunto de entradas. Exemplo: `expect(calculadora.sumar(2, 3)).toBe(5)`.
-* **Testes de Regressão:** A suíte de testes como um todo funciona como uma rede de segurança contra regressões. Ao executar os 54 testes após cada alteração no código, garantimos que as funcionalidades existentes não foram quebradas, prevenindo a reintrodução de bugs.
-* **Snapshot Testing:** O Jest possui um mecanismo de "snapshot" que é particularmente útil para testar a saída de componentes de UI. Ele captura uma "foto" da estrutura de um componente e, em execuções futuras, compara a nova saída com a foto salva, alertando sobre quaisquer mudanças inesperadas (ou intencionais).
+* **Testes Funcionais:** Os 24 testes implementados para a classe `Calculadora` são funcionais. Eles verificam se uma funcionalidade específica (soma, subtração, etc.) se comporta conforme o esperado, validando as saídas com base em um conjunto de entradas. Exemplo: `expect(calculadora.sumar(2, 3)).toBe(5)`.
+* **Testes de Regressão:** A suíte de testes como um todo funciona como uma rede de segurança contra regressões. Ao executar os 24 testes após cada alteração no código, garantimos que as funcionalidades existentes não foram quebradas, prevenindo a reintrodução de bugs.
 
 ---
 
@@ -75,11 +74,12 @@ A integração do Jest em um projeto JavaScript é simples e direta.
 Certifique-se de ter o Node.js e o npm (ou Yarn) instalados no seu ambiente de desenvolvimento.
 
 **Passo 2: Instalação das Dependências**
-No terminal, na raiz do projeto, execute o seguinte comando para instalar o Jest e o ambiente `jsdom` (necessário para simular um ambiente de navegador e testar a manipulação do DOM):
+No terminal, na raiz do projeto, execute o seguinte comando para instalar o Jest:
 
 ```bash
 npm install --save-dev jest jest-environment-jsdom
 ```
+*(Nota: `jest-environment-jsdom` é mantido para compatibilidade, embora os testes de lógica pura não interajam com o DOM).*
 
 **Passo 3: Configuração no `package.json`**
 Adicione a seção `jest` ao seu arquivo `package.json` para configurar o ambiente de teste e a coleta de cobertura de código.
@@ -97,7 +97,7 @@ Adicione a seção `jest` ao seu arquivo `package.json` para configurar o ambien
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "collectCoverageFrom": ["*.js", "!index.js"]
+    "collectCoverageFrom": ["Calculadora.js"]
   }
 }
 ```
