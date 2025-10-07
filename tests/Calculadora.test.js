@@ -90,21 +90,21 @@ describe('Calculadora', () => {
             expect(calculadora.dividir(-10, -2)).toBe(5);
         });
 
-        test('deve dividir positivo por negativo corretamente', () => {
-            expect(calculadora.dividir(10, -2)).toBe(-5);
+        test('deve retornar infinito ao dividir por zero', () => {
+            expect(calculadora.dividir(5, 0)).toBe(Infinity);
+            expect(calculadora.dividir(-5, 0)).toBe(-Infinity);
         });
 
         test('deve dividir números decimais corretamente', () => {
             expect(calculadora.dividir(7.5, 2.5)).toBeCloseTo(3);
         });
 
-        test('deve dividir por um corretamente', () => {
-            expect(calculadora.dividir(8, 1)).toBe(8);
+        test('deve dividir positivo por negativo corretamente', () => {
+            expect(calculadora.dividir(10, -2)).toBe(-5);
         });
 
-        test('deve retornar infinito ao dividir por zero', () => {
-            expect(calculadora.dividir(5, 0)).toBe(Infinity);
-            expect(calculadora.dividir(-5, 0)).toBe(-Infinity);
+        test('deve dividir por um corretamente', () => {
+            expect(calculadora.dividir(8, 1)).toBe(8);
         });
 
         test('deve retornar NaN ao dividir zero por zero', () => {
@@ -117,16 +117,50 @@ describe('Calculadora', () => {
     });
 
     describe('Casos Extremos', () => {
-        test('deve lidar com números muito grandes', () => {
+        test('deve somar com números muito grandes', () => {
             const grande1 = 999999999999999;
             const grande2 = 999999999999999;
             expect(calculadora.sumar(grande1, grande2)).toBe(1999999999999998);
         });
 
-        test('deve lidar com números muito pequenos', () => {
+        test('deve somar com números muito pequenos', () => {
             const pequeno1 = 0.000000001;
             const pequeno2 = 0.000000002;
             expect(calculadora.sumar(pequeno1, pequeno2)).toBeCloseTo(0.000000003);
+        });
+
+        test('deve multiplicar com números muito grandes', () => {
+            const grande1 = 100000000;
+            const grande2 = 100000000;
+            expect(calculadora.multiplicar(grande1, grande2)).toBe(10000000000000000);
+        });
+
+        test('deve multiplicar com números muito pequenos', () => {
+            const pequeno1 = 0.000000001;
+            const pequeno2 = 0.000000002;
+            expect(calculadora.multiplicar(pequeno1, pequeno2)).toBeCloseTo(0.00000002);
+        });
+
+        test('deve lidar com divisão por números muito pequenos', () => {
+            const pequeno = 0.000000001;
+            expect(calculadora.dividir(1, pequeno)).toBeCloseTo(1000000000);
+        });
+
+        test('deve lidar com divisão de números muito grandes', () => {
+            const grande = 1000000000;
+            expect(calculadora.dividir(grande, 2)).toBe(500000000);
+        });
+
+        test('deve lidar com subtracao de numeros muito grandes', () => {
+            const grande1 = 1000000000;
+            const grande2 = 999999999;
+            expect(calculadora.restar(grande1, grande2)).toBe(1);
+        });
+
+        test('deve lidar com subtracao de numeros muito pequenos', () => {
+            const pequeno1 = 0.0000000002;
+            const pequeno2 = 0.0000000001;
+            expect(calculadora.restar(pequeno1, pequeno2)).toBeCloseTo(0.0000000001);
         });
     });
 });
