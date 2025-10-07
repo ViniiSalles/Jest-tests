@@ -1,702 +1,202 @@
-# Relatório de Testes - Calculadora JavaScript
+# Relatório de Testes com o Framework Jest
 
-## Índice
+## 1. Breve Descrição do Framework Selecionado: Jest
 
-1. [Introdução ao Framework Jest](#introdução-ao-framework-jest)
-2. [Configuração do Ambiente de Testes](#configuração-do-ambiente-de-testes)
-3. [Estrutura dos Testes Implementados](#estrutura-dos-testes-implementados)
-4. [Análise dos Testes da Classe Calculadora](#análise-dos-testes-da-classe-calculadora)
-5. [Análise dos Testes da Classe Display](#análise-dos-testes-da-classe-display)
-6. [Cobertura de Código](#cobertura-de-código)
-7. [Como Executar os Testes](#como-executar-os-testes)
-8. [Conclusões e Recomendações](#conclusões-e-recomendações)
+**Jest** é um framework de testes em JavaScript desenvolvido e mantido pela Meta (anteriormente Facebook), amplamente adotado como padrão na indústria para projetos JavaScript e TypeScript. Sua popularidade deriva de uma filosofia que combina simplicidade, performance e um conjunto robusto de funcionalidades integradas, minimizando a necessidade de configuração e de bibliotecas externas.
 
----
+O principal objetivo do Jest é fornecer uma experiência de teste "out-of-the-box". Ele inclui, em uma única instalação, um executor de testes (test runner), uma biblioteca de asserções (assertions) e um framework de mocks, eliminando a complexidade de integrar múltiplas ferramentas.
 
-## Introdução ao Framework Jest
+**Principais Características:**
 
-### O que é o Jest?
+* **Configuração Mínima (Zero Configuration):** Jest é projetado para funcionar na maioria dos projetos JavaScript sem a necessidade de arquivos de configuração extensos. Ele detecta automaticamente os arquivos de teste no projeto.
+* **Assertions Integradas:** Oferece uma API de asserções rica e expressiva através da função `expect()`, com uma vasta gama de "matchers" (`.toBe()`, `.toEqual()`, `.toHaveBeenCalled()`, etc.) que tornam os testes legíveis e fáceis de escrever.
+* **Mocks e Spies:** Possui um poderoso sistema de mocking integrado que permite isolar o código sob teste. É possível mockar módulos inteiros, classes ou funções individuais, além de espionar chamadas de função para verificar seu comportamento.
+* **Relatórios de Cobertura de Código:** Gera relatórios detalhados de cobertura de código nativamente, identificando partes do código que não foram testadas e ajudando a garantir a qualidade do software.
+* **Execução em Paralelo:** Para otimizar a performance, o Jest executa testes em processos paralelos e isolados, reduzindo significativamente o tempo total de execução da suíte de testes.
 
-Jest é um framework de testes em JavaScript desenvolvido pelo Facebook (Meta) que se tornou o padrão da indústria para testes em projetos JavaScript e TypeScript. Ele é conhecido por sua facilidade de uso, configuração mínima e recursos poderosos.
-
-### Principais Características do Jest
-
-#### 1. **Zero Configuration**
-
-- Funciona "out of the box" com configuração mínima
-- Detecta automaticamente arquivos de teste
-- Inclui assertion library integrada
-
-#### 2. **Snapshot Testing**
-
-- Captura "fotografias" do output do código
-- Detecta mudanças não intencionais na interface
-
-#### 3. **Mocking Poderoso**
-
-- Sistema de mocks integrado
-- Capacidade de mockar módulos, funções e objetos
-- Spies para monitorar chamadas de função
-
-#### 4. **Cobertura de Código**
-
-- Relatórios de cobertura integrados
-- Identifica código não testado
-- Métricas detalhadas por arquivo
-
-#### 5. **Parallel Testing**
-
-- Executa testes em paralelo para melhor performance
-- Isolamento automático entre testes
-
-### Como o Jest Funciona
+A estrutura de um teste em Jest é organizada e intuitiva, geralmente utilizando blocos `describe` para agrupar testes relacionados e blocos `test` (ou `it`) para definir os casos de teste individuais.
 
 ```javascript
 // Estrutura básica de um teste Jest
-describe("Grupo de testes", () => {
+describe("Grupo de testes para a Calculadora", () => {
+  // Bloco executado antes de cada teste deste grupo
   beforeEach(() => {
-    // Configuração antes de cada teste
+    // Ex: inicializar uma nova instância da calculadora
   });
 
-  test("deve fazer algo específico", () => {
-    // Arrange - Preparar dados
-    const entrada = "valor";
+  test("deve somar dois números positivos corretamente", () => {
+    // Arrange (Preparação)
+    const num1 = 2;
+    const num2 = 3;
 
-    // Act - Executar ação
-    const resultado = minhaFuncao(entrada);
+    // Act (Execução)
+    const resultado = minhaFuncaoDeSoma(num1, num2);
 
-    // Assert - Verificar resultado
-    expect(resultado).toBe("valor esperado");
+    // Assert (Verificação)
+    expect(resultado).toBe(5);
   });
 });
 ```
 
-#### Ciclo de Vida dos Testes
+---
 
-1. **beforeAll()** - Executa uma vez antes de todos os testes
-2. **beforeEach()** - Executa antes de cada teste individual
-3. **afterEach()** - Executa após cada teste individual
-4. **afterAll()** - Executa uma vez após todos os testes
+## 2. Categorização do Framework (Jest)
 
-#### Matchers Principais
+O Jest pode ser classificado sob múltiplas perspectivas de teste:
 
-- `toBe()` - Igualdade exata (Object.is)
-- `toEqual()` - Igualdade profunda de objetos
-- `toBeCloseTo()` - Números com ponto flutuante
-- `toBeUndefined()` - Valores undefined
-- `toBeNull()` - Valores null
-- `toBeTruthy()` / `toBeFalsy()` - Valores truthy/falsy
+#### i) Técnicas de Teste
+
+Sob a perspectiva de técnicas, o Jest é primariamente uma ferramenta para **Testes de Caixa Branca (White-Box Testing)**.
+
+* **Argumento:** Os testes escritos com Jest têm acesso direto ao código-fonte, incluindo classes, módulos e funções. Os desenvolvedores criam testes que conhecem a estrutura interna do software, permitindo mockar dependências e testar caminhos lógicos específicos (branches) dentro de uma função. Por exemplo, ao testar a função de divisão, criamos casos específicos para a condição `if (divisor === 0)`, o que demonstra conhecimento da implementação interna.
+
+#### ii) Níveis de Teste
+
+Considerando os níveis de teste, o Jest se destaca principalmente em:
+
+* **Testes de Unidade (Unit Testing):** Este é o ponto mais forte do Jest. Sua arquitetura, com mocks integrados e um executor rápido, é ideal para isolar e testar a menor parte funcional do código (uma função ou uma classe) de forma independente. O `README` demonstra isso perfeitamente, com arquivos de teste dedicados (`Calculadora.test.js`, `Display.test.js`) que verificam cada classe em total isolamento.
+* **Testes de Integração (Integration Testing):** Embora seja excelente para testes de unidade, o Jest também é amplamente utilizado para testes de integração. Ele pode ser usado para verificar a interação entre diferentes módulos ou componentes. No projeto da calculadora, um teste de integração poderia verificar se a classe `Display` chama corretamente os métodos da classe `Calculadora` quando um usuário realiza uma operação completa.
+
+#### iii) Tipos de Teste
+
+Em relação aos tipos de teste, o Jest suporta principalmente:
+
+* **Testes Funcionais:** A maioria dos 54 testes implementados são funcionais. Eles verificam se uma funcionalidade específica do software se comporta conforme o esperado, validando as saídas com base em um conjunto de entradas. Exemplo: `expect(calculadora.sumar(2, 3)).toBe(5)`.
+* **Testes de Regressão:** A suíte de testes como um todo funciona como uma rede de segurança contra regressões. Ao executar os 54 testes após cada alteração no código, garantimos que as funcionalidades existentes não foram quebradas, prevenindo a reintrodução de bugs.
+* **Snapshot Testing:** O Jest possui um mecanismo de "snapshot" que é particularmente útil para testar a saída de componentes de UI. Ele captura uma "foto" da estrutura de um componente e, em execuções futuras, compara a nova saída com a foto salva, alertando sobre quaisquer mudanças inesperadas (ou intencionais).
 
 ---
 
-## Configuração do Ambiente de Testes
+## 3. Forma de Instalação/Integração do Framework
 
-### Estrutura do Projeto
+A integração do Jest em um projeto JavaScript é simples e direta.
 
-```
-calculadora-main-2/
-├── __tests__/
-│   ├── Calculadora.test.js
-│   └── Display.test.js
-├── Calculadora.js
-├── Display.js
-├── index.js
-├── index.html
-├── index.css
-├── package.json
-└── README.md
+**Passo 1: Pré-requisitos**
+Certifique-se de ter o Node.js e o npm (ou Yarn) instalados no seu ambiente de desenvolvimento.
+
+**Passo 2: Instalação das Dependências**
+No terminal, na raiz do projeto, execute o seguinte comando para instalar o Jest e o ambiente `jsdom` (necessário para simular um ambiente de navegador e testar a manipulação do DOM):
+
+```bash
+npm install --save-dev jest jest-environment-jsdom
 ```
 
-### Configuração no package.json
+**Passo 3: Configuração no `package.json`**
+Adicione a seção `jest` ao seu arquivo `package.json` para configurar o ambiente de teste e a coleta de cobertura de código.
 
 ```json
 {
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watchAll",
+    "test:coverage": "jest --coverage"
+  },
   "devDependencies": {
     "jest": "^29.7.0",
     "jest-environment-jsdom": "^29.7.0"
   },
   "jest": {
     "testEnvironment": "jsdom",
-    "collectCoverageFrom": ["*.js", "!index.js"],
-    "testMatch": ["**/__tests__/**/*.js", "**/?(*.)+(spec|test).js"]
+    "collectCoverageFrom": ["*.js", "!index.js"]
   }
 }
 ```
 
-### Adaptação das Classes para Node.js
-
-Para que as classes funcionem tanto no browser quanto no Node.js, foi implementado um sistema de exports condicionais:
+**Passo 4: Adaptação do Código para Testabilidade (Opcional)**
+Para que as classes pudessem ser importadas pelo Jest no ambiente Node.js, foi adicionada uma verificação para exportar o módulo:
 
 ```javascript
-// Em Calculadora.js
-class Calculadora {
-  // ... implementação
-}
-
-// Exportar para Node.js se module estiver disponível
+// Exemplo em Calculadora.js
 if (typeof module !== "undefined" && module.exports) {
   module.exports = Calculadora;
 }
 ```
 
-```javascript
-// Em Display.js
-// Importar Calculadora no Node.js
-let Calculadora;
-if (typeof require !== "undefined") {
-  Calculadora = require("./Calculadora");
-}
-
-class Display {
-  // ... implementação
-}
-
-// Exportar para Node.js se module estiver disponível
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = Display;
-}
-```
-
----
-
-## Estrutura dos Testes Implementados
-
-### Organização dos Testes
-
-Os testes foram organizados seguindo as melhores práticas:
-
-1. **Separação por Classe**: Cada classe tem seu próprio arquivo de teste
-2. **Agrupamento Lógico**: Testes agrupados por funcionalidade usando `describe()`
-3. **Nomenclatura Descritiva**: Nomes claros indicando o que está sendo testado
-4. **Isolamento**: Cada teste é independente dos outros
-
-### Padrões Utilizados
-
-#### AAA Pattern (Arrange-Act-Assert)
-
-```javascript
-test("deve somar dois números positivos corretamente", () => {
-  // Arrange
-  const calculadora = new Calculadora();
-
-  // Act
-  const resultado = calculadora.sumar(2, 3);
-
-  // Assert
-  expect(resultado).toBe(5);
-});
-```
-
-#### Setup e Teardown
-
-```javascript
-describe("Display", () => {
-  let display;
-  let mockDisplayValorAnterior;
-  let mockDisplayValorActual;
-
-  beforeEach(() => {
-    // Setup DOM mockado
-    document.body.innerHTML = `
-            <div id="valor-anterior"></div>
-            <div id="valor-actual"></div>
-        `;
-
-    mockDisplayValorAnterior = document.getElementById("valor-anterior");
-    mockDisplayValorActual = document.getElementById("valor-actual");
-    display = new Display(mockDisplayValorAnterior, mockDisplayValorActual);
-  });
-
-  afterEach(() => {
-    // Cleanup
-    document.body.innerHTML = "";
-  });
-});
-```
-
----
-
-## Análise dos Testes da Classe Calculadora
-
-### Estrutura dos Testes
-
-A classe `Calculadora` possui **24 testes** organizados em **6 grupos principais**:
-
-#### 1. Operação de Soma (5 testes)
-
-```javascript
-describe("Operação de Soma", () => {
-  test("deve somar dois números positivos corretamente", () => {
-    expect(calculadora.sumar(2, 3)).toBe(5);
-  });
-
-  test("deve somar números negativos corretamente", () => {
-    expect(calculadora.sumar(-2, -3)).toBe(-5);
-  });
-
-  test("deve somar número positivo com negativo corretamente", () => {
-    expect(calculadora.sumar(5, -3)).toBe(2);
-  });
-
-  test("deve somar números decimais corretamente", () => {
-    expect(calculadora.sumar(2.5, 3.7)).toBeCloseTo(6.2);
-  });
-
-  test("deve somar zero corretamente", () => {
-    expect(calculadora.sumar(5, 0)).toBe(5);
-    expect(calculadora.sumar(0, 0)).toBe(0);
-  });
-});
-```
-
-**Cenários testados:**
-
-- ✅ Números positivos
-- ✅ Números negativos
-- ✅ Combinação positivo/negativo
-- ✅ Números decimais (usando `toBeCloseTo()` para evitar problemas de precisão)
-- ✅ Operações com zero
-
-#### 2. Operação de Subtração (5 testes)
-
-Similar à soma, mas testando especificamente:
-
-- ✅ Resultados negativos
-- ✅ Subtração de números negativos
-- ✅ Casos edge com zero
-
-#### 3. Operação de Multiplicação (6 testes)
-
-Inclui testes adicionais para:
-
-- ✅ Multiplicação por zero (resultado sempre 0)
-- ✅ Multiplicação por um (elemento neutro)
-- ✅ Sinal do resultado (positivo/negativo)
-
-#### 4. Operação de Divisão (8 testes)
-
-O grupo mais abrangente, testando:
-
-- ✅ Divisões normais
-- ✅ **Divisão por zero** → `Infinity` ou `-Infinity`
-- ✅ **Zero dividido por zero** → `NaN`
-- ✅ Zero dividido por número → `0`
-- ✅ Divisão por um (elemento neutro)
-
-```javascript
-test("deve retornar infinito ao dividir por zero", () => {
-  expect(calculadora.dividir(5, 0)).toBe(Infinity);
-  expect(calculadora.dividir(-5, 0)).toBe(-Infinity);
-});
-
-test("deve retornar NaN ao dividir zero por zero", () => {
-  expect(calculadora.dividir(0, 0)).toBeNaN();
-});
-```
-
-#### 5. Casos Extremos (2 testes)
-
-```javascript
-test("deve lidar com números muito grandes", () => {
-  const grande1 = 999999999999999;
-  const grande2 = 999999999999999;
-  expect(calculadora.sumar(grande1, grande2)).toBe(1999999999999998);
-});
-
-test("deve lidar com números muito pequenos", () => {
-  const pequeno1 = 0.000000001;
-  const pequeno2 = 0.000000002;
-  expect(calculadora.sumar(pequeno1, pequeno2)).toBeCloseTo(0.000000003);
-});
-```
-
-### Cobertura da Classe Calculadora
-
-- **100% das funções** testadas
-- **100% das linhas** executadas
-- **75% dos branches** (única branch não coberta é linha 20 - condição específica)
-
----
-
-## Análise dos Testes da Classe Display
-
-### Estrutura dos Testes
-
-A classe `Display` possui **30 testes** organizados em **8 grupos principais**:
-
-#### 1. Inicialização (3 testes)
-
-Verifica se a classe é inicializada corretamente:
-
-```javascript
-test("deve inicializar com valores vazios", () => {
-  expect(display.valorActual).toBe("");
-  expect(display.valorAnterior).toBe("");
-  expect(display.tipoOperacion).toBeUndefined();
-});
-
-test("deve ter os signos das operações corretos", () => {
-  expect(display.signos.sumar).toBe("+");
-  expect(display.signos.restar).toBe("-");
-  expect(display.signos.multiplicar).toBe("x");
-  expect(display.signos.dividir).toBe("%");
-});
-```
-
-#### 2. Adicionar Números (5 testes)
-
-Testa a funcionalidade de entrada de números:
-
-```javascript
-test("não deve adicionar segundo ponto decimal", () => {
-  display.agregarNumero("5");
-  display.agregarNumero(".");
-  display.agregarNumero("2");
-  display.agregarNumero("."); // Este ponto não deve ser adicionado
-  display.agregarNumero("3");
-  expect(display.valorActual).toBe("5.23");
-});
-```
-
-**Funcionalidades testadas:**
-
-- ✅ Adição de dígitos individuais
-- ✅ Concatenação de múltiplos números
-- ✅ Adição de ponto decimal
-- ✅ **Validação**: Impede múltiplos pontos decimais
-- ✅ Atualização do display
-
-#### 3. Operações (4 testes)
-
-Testa o comportamento das operações matemáticas:
-
-```javascript
-test("deve calcular operação existente antes de definir nova", () => {
-  display.valorActual = "5";
-  display.computar("sumar");
-  display.valorActual = "3";
-  display.computar("multiplicar");
-
-  expect(display.valorAnterior).toBe(8); // 5 + 3 = 8
-  expect(display.tipoOperacion).toBe("multiplicar");
-});
-```
-
-#### 4. Cálculos (5 testes)
-
-Verifica se os cálculos são executados corretamente:
-
-- ✅ Todas as operações matemáticas
-- ✅ **Validação de entrada**: Não calcula com valores inválidos
-
-#### 5. Operação Igual (2 testes)
-
-Testa o comportamento específico da operação "igual":
-
-```javascript
-test("deve executar cálculo ao pressionar igual", () => {
-  display.valorAnterior = "8";
-  display.valorActual = "2";
-  display.tipoOperacion = "dividir";
-  display.computar("igual");
-  expect(display.valorAnterior).toBe(4); // O resultado fica em valorAnterior
-  expect(display.valorActual).toBe(""); // valorActual é limpo
-});
-```
-
-#### 6. Funcionalidades de Limpeza (5 testes)
-
-Testa as funcionalidades de limpeza:
-
-```javascript
-test("deve apagar último dígito", () => {
-  display.valorActual = "123";
-  display.borrar();
-  expect(display.valorActual).toBe("12");
-});
-
-test("deve limpar tudo com borrarTodo", () => {
-  display.valorActual = "123";
-  display.valorAnterior = "456";
-  display.tipoOperacion = "sumar";
-  display.borrarTodo();
-
-  expect(display.valorActual).toBe("");
-  expect(display.valorAnterior).toBe("");
-  expect(display.tipoOperacion).toBeUndefined();
-});
-```
-
-#### 7. Atualização do Display (2 testes)
-
-Verifica se o DOM é atualizado corretamente:
-
-```javascript
-test("deve imprimir valores no display corretamente", () => {
-  display.valorActual = "42";
-  display.valorAnterior = "7";
-  display.tipoOperacion = "multiplicar";
-  display.imprimirValores();
-
-  expect(mockDisplayValorActual.textContent).toBe("42");
-  expect(mockDisplayValorAnterior.textContent).toBe("7 x");
-});
-```
-
-#### 8. Cenários Complexos (4 testes)
-
-Testa sequências completas de operações:
-
-```javascript
-test("deve executar sequência de operações corretamente", () => {
-  // Simular: 2 + 3 * 4 = 20 (não 14, porque calculadora resolve da esquerda para direita)
-  display.agregarNumero("2");
-  display.computar("sumar");
-  display.agregarNumero("3");
-  display.computar("multiplicar"); // Aqui deve calcular 2+3=5
-  display.agregarNumero("4");
-  display.computar("igual"); // Aqui deve calcular 5*4=20
-
-  expect(display.valorAnterior).toBe(20);
-  expect(display.valorActual).toBe("");
-});
-```
-
-### Desafios Específicos dos Testes da Display
-
-#### 1. Mock do DOM
-
-Foi necessário usar `jest-environment-jsdom` para simular elementos DOM:
-
-```javascript
-/**
- * @jest-environment jsdom
- */
-
-beforeEach(() => {
-  document.body.innerHTML = `
-        <div id="valor-anterior"></div>
-        <div id="valor-actual"></div>
-    `;
-
-  mockDisplayValorAnterior = document.getElementById("valor-anterior");
-  mockDisplayValorActual = document.getElementById("valor-actual");
-});
-```
-
-#### 2. Comportamento Complexo da Classe
-
-A classe Display tem lógica complexa onde:
-
-- `valorActual` é sempre limpo após operações
-- Resultados ficam em `valorAnterior`
-- Operação "igual" tem comportamento especial
-
-#### 3. Teste de Estados Intermediários
-
-Foi necessário testar não apenas o resultado final, mas estados intermediários durante sequências de operações.
-
----
-
-## Cobertura de Código
-
-### Métricas Alcançadas
-
-```
--------------|---------|----------|---------|---------|-------------------
-File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
--------------|---------|----------|---------|---------|-------------------
-All files    |     100 |    83.33 |     100 |     100 |
- Calculadora.js |   100 |       75 |     100 |     100 | 20
- Display.js  |     100 |       85 |     100 |     100 | 3,38,64
--------------|---------|----------|---------|---------|-------------------
-```
-
-### Análise da Cobertura
-
-#### ✅ **Excelente Cobertura**
-
-- **100% das Statements**: Todas as declarações foram executadas
-- **100% das Functions**: Todas as funções foram testadas
-- **100% das Lines**: Todas as linhas foram cobertas
-
-#### ⚠️ **Branches Parcialmente Cobertas (83.33%)**
-
-**Calculadora.js (75% branches):**
-
-- Linha 20: Provavelmente uma condição específica não testada
-
-**Display.js (85% branches):**
-
-- Linhas 3, 38, 64: Condições relacionadas à verificação de ambiente (Node.js vs Browser)
-
-### Linhas Não Cobertas
-
-As linhas não cobertas (3, 38, 64) são relacionadas às verificações de ambiente:
-
-```javascript
-// Linha 3: Verificação de require
-if (typeof require !== "undefined") {
-  Calculadora = require("./Calculadora");
-}
-
-// Linha 64: Verificação de module.exports
-if (typeof module !== "undefined" && module.exports) {
-  module.exports = Display;
-}
-```
-
-Essas linhas são código de compatibilidade e não afetam a funcionalidade principal.
-
----
-
-## Como Executar os Testes
-
-### Scripts Disponíveis
+**Passo 5: Execução dos Testes**
+Com a configuração pronta, utilize os scripts definidos no `package.json` para rodar os testes:
 
 ```bash
-# Executar todos os testes uma vez
+# Executar todos os testes uma única vez
 npm test
 
-# Executar testes em modo watch (re-executa quando arquivos mudam)
-npm run test:watch
-
-# Executar testes com relatório de cobertura detalhado
+# Executar testes com o relatório de cobertura
 npm run test:coverage
 ```
 
-### Saída dos Testes
-
-#### Execução Normal
-
-```
- PASS  __tests__/Display.test.js
- PASS  __tests__/Calculadora.test.js
-
-Test Suites: 2 passed, 2 total
-Tests:       54 passed, 54 total
-Snapshots:   0 total
-Time:        0.643 s, estimated 1 s
-```
-
-#### Com Cobertura
-
-```
--------------|---------|----------|---------|---------|-------------------
-File         | % Stmts | % Branch | % Funcs | % Lines | Uncovered Line #s
--------------|---------|----------|---------|---------|-------------------
-All files    |     100 |    83.33 |     100 |     100 |
--------------|---------|----------|---------|---------|-------------------
-```
-
-### Integração com CI/CD
-
-Os testes podem ser facilmente integrados em pipelines de CI/CD:
-
-```yaml
-# Exemplo GitHub Actions
-- name: Run Tests
-  run: npm test
-
-- name: Generate Coverage Report
-  run: npm run test:coverage
-```
-
 ---
 
-## Conclusões e Recomendações
+## 4. Documentação da Estratégia para Derivação de Casos de Teste
 
-### ✅ **Pontos Fortes da Implementação**
+Para derivar os casos de teste da classe `Calculadora`, foram aplicadas as estratégias de **Particionamento de Equivalência** e **Análise de Valor Limite**. Demonstraremos o processo usando como exemplo a função `dividir(numerador, denominador)`.
 
-1. **Cobertura Excelente**: 100% das funções e linhas testadas
-2. **Testes Abrangentes**: Cobrem casos normais, edge cases e cenários complexos
-3. **Organização Clara**: Testes bem estruturados e organizados
-4. **Mocks Adequados**: DOM mockado adequadamente para testes de interface
-5. **Documentação**: Testes servem como documentação viva do comportamento esperado
+**Contexto:** A função de divisão possui comportamentos distintos dependendo dos valores de entrada, especialmente em relação ao zero.
 
-### 🎯 **Benefícios Alcançados**
+**Passo 1: Identificação das Partições de Equivalência**
 
-1. **Confiabilidade**: Garante que mudanças não quebrem funcionalidades existentes
-2. **Regressão**: Previne bugs em funcionalidades já implementadas
-3. **Documentação**: Testes documentam o comportamento esperado
-4. **Refatoração Segura**: Permite mudanças no código com confiança
-5. **Qualidade**: Força a pensar em casos edge e validações
+Identificamos as classes de entradas que deveriam produzir resultados similares. Para numerador e denominador, as partições são:
+* Números positivos
+* Números negativos
+* Zero
 
-### 🔧 **Melhorias Possíveis**
+**Passo 2: Análise de Valor Limite e Casos Especiais**
 
-#### 1. **Cobertura de Branches**
+A análise de valor limite foca nos "limites" das partições e em casos especiais que podem levar a erros. Para a divisão, o valor mais crítico é o **zero**.
+* **Limite:** Denominador igual a zero (divisão por zero).
+* **Caso Especial 1:** Numerador igual a zero.
+* **Caso Especial 2:** Numerador e denominador iguais a zero.
+
+**Passo 3: Derivação e Combinação dos Casos de Teste**
+
+Combinando as partições e os casos especiais, derivamos os seguintes casos de teste:
+
+1.  **Cenário: Divisão Padrão (Positivo / Positivo)**
+    * **Partição:** Numerador Positivo, Denominador Positivo.
+    * **Caso de Teste:** `dividir(10, 2)`
+    * **Resultado Esperado:** `5`
+
+2.  **Cenário: Divisão com Resultado Negativo (Negativo / Positivo)**
+    * **Partição:** Numerador Negativo, Denominador Positivo.
+    * **Caso de Teste:** `dividir(-10, 2)`
+    * **Resultado Esperado:** `-5`
+
+3.  **Cenário: Divisão por Zero (Valor Limite)**
+    * **Partição:** Qualquer Numerador, Denominador Zero.
+    * **Caso de Teste 1:** `dividir(5, 0)` -> `Infinity`
+    * **Caso de Teste 2:** `dividir(-5, 0)` -> `-Infinity`
+
+4.  **Cenário: Zero Dividido por um Número (Caso Especial)**
+    * **Partição:** Numerador Zero, Denominador Não-Zero.
+    * **Caso de Teste:** `dividir(0, 5)`
+    * **Resultado Esperado:** `0`
+
+5.  **Cenário: Zero Dividido por Zero (Caso Especial)**
+    * **Partição:** Numerador Zero, Denominador Zero.
+    * **Caso de Teste:** `dividir(0, 0)`
+    * **Resultado Esperado:** `NaN` (Not a Number)
+
+**Passo 4: Implementação dos Casos de Teste em Jest**
+
+Os casos derivados foram traduzidos diretamente para testes no arquivo `Calculadora.test.js`, validando cada comportamento esperado.
 
 ```javascript
-// Adicionar testes para cobrir branches restantes
-test("deve lidar com condições específicas não cobertas", () => {
-  // Testes específicos para as linhas 20, 3, 38, 64
+// Código extraído do relatório original
+describe("Operação de Divisão", () => {
+    test("deve dividir dois números positivos", () => {
+        expect(calculadora.dividir(10, 2)).toBe(5); // Cenário 1
+    });
+
+    test("deve retornar infinito ao dividir por zero", () => {
+        expect(calculadora.dividir(5, 0)).toBe(Infinity); // Cenário 3
+        expect(calculadora.dividir(-5, 0)).toBe(-Infinity); // Cenário 3
+    });
+
+    test("deve retornar NaN ao dividir zero por zero", () => {
+        expect(calculadora.dividir(0, 0)).toBeNaN(); // Cenário 5
+    });
+
+    test("deve retornar 0 ao dividir zero por um número", () => {
+        expect(calculadora.dividir(0, 5)).toBe(0); // Cenário 4
+    });
 });
 ```
-
-#### 2. **Testes de Integração**
-
-```javascript
-// Adicionar testes que simulem interação completa do usuário
-test("simulação completa: usuário calcula 2 + 3 * 4", () => {
-  // Simular cliques nos botões e verificar resultado final
-});
-```
-
-#### 3. **Testes de Performance**
-
-```javascript
-test("deve executar operações rapidamente", () => {
-  const inicio = performance.now();
-  calculadora.sumar(1000000, 2000000);
-  const fim = performance.now();
-  expect(fim - inicio).toBeLessThan(1); // menos de 1ms
-});
-```
-
-#### 4. **Testes de Acessibilidade**
-
-```javascript
-test("elementos devem ter atributos de acessibilidade", () => {
-  expect(mockDisplayValorActual).toHaveAttribute("role", "textbox");
-});
-```
-
-### 📈 **Métricas de Qualidade**
-
-| Métrica               | Valor  | Status        |
-| --------------------- | ------ | ------------- |
-| Testes Totais         | 54     | ✅ Excelente  |
-| Cobertura de Funções  | 100%   | ✅ Perfeito   |
-| Cobertura de Linhas   | 100%   | ✅ Perfeito   |
-| Cobertura de Branches | 83.33% | ⚠️ Bom        |
-| Tempo de Execução     | 0.643s | ✅ Rápido     |
-| Suites de Teste       | 2      | ✅ Organizado |
-
-### 🚀 **Próximos Passos Recomendados**
-
-1. **Integração Contínua**: Configurar execução automática dos testes
-2. **Testes E2E**: Adicionar testes end-to-end com ferramentas como Cypress
-3. **Visual Testing**: Implementar testes de regressão visual
-4. **Performance Testing**: Adicionar benchmarks de performance
-5. **Mutation Testing**: Usar ferramentas como Stryker para testar a qualidade dos testes
-
----
-
-## Resumo Executivo
-
-A implementação do framework Jest na aplicação da calculadora foi um **sucesso completo**. Com **54 testes** distribuídos em **2 suites**, alcançamos:
-
-- ✅ **100% de cobertura de funções e linhas**
-- ✅ **Testes robustos** cobrindo casos normais e extremos
-- ✅ **Arquitetura testável** com mocks adequados
-- ✅ **Documentação viva** através dos testes
-- ✅ **Base sólida** para desenvolvimento futuro
-
-O framework Jest provou ser a escolha ideal para este projeto, oferecendo facilidade de uso, recursos poderosos e excelente integração com o ecossistema JavaScript. Os testes implementados garantem a confiabilidade da aplicação e fornecem uma base sólida para futuras melhorias e expansões.
-
----
-
-_Relatório gerado em: 6 de outubro de 2025_  
-_Versão do Jest: 29.7.0_  
-_Total de testes: 54_  
-_Tempo de execução: ~0.64s_
+Esta abordagem sistemática garantiu que a função de divisão fosse testada não apenas em seu "caminho feliz", mas também em todos os seus casos extremos e especiais, aumentando a robustez e a confiabilidade da aplicação.
